@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>G's Per Second Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, #e0f2fe, #f9fafb);
+      color: #0f172a;
+    }
+
+    .card {
+      background: white;
+      padding: 2.5rem 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 1.6rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      flex: 1;
+      min-width: 120px;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .pill-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+    }
+
+    .pill-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .pill-value span {
+      font-size: 0.95rem;
+      color: #6b7280;
+      font-weight: 500;
+      margin-left: 0.25rem;
+    }
+
+    .input-row {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.7rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    input[type="text"]:disabled {
+      background: #f9fafb;
+      cursor: not-allowed;
+      color: #9ca3af;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 1.3rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    button:hover:not(:disabled) {
+      background: #2563eb;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
+      transform: translateY(-1px);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .instructions {
+      margin-top: 1.3rem;
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .instructions ol {
+      margin-left: 1.1rem;
+      margin-top: 0.4rem;
+    }
+
+    .status {
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #16a34a;
+      min-height: 1.2em;
+    }
+
+    .status.idle {
+      color: #6b7280;
+    }
+
+    .status.done {
+      color: #db2777;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        margin: 1rem;
+        padding: 1.8rem 1.4rem;
+      }
+
+      .title {
+        font-size: 1.5rem;
+      }
+
+      .input-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">G's Per Second</div>
+    <div class="subtitle">How many times can you type <strong>g</strong> and press <strong>Enter</strong> in 10 seconds?</div>
+
+    <div class="info-row">
+      <div class="pill">
+        <div class="pill-label">Time Left</div>
+        <div class="pill-value" id="timeLeft">10.0 <span>seconds</span></div>
+      </div>
+      <div class="pill">
+        <div class="pill-label">Total G's</div>
+        <div class="pill-value" id="gCount">0</div>
+      </div>
+      <div class="pill">
+        <div class="pill-label">G's Per Second</div>
+        <div class="pill-value" id="gps">0.00 <span>g/s</span></div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <input
+        type="text"
+        id="gInput"
+        placeholder="Type 'g' and press Enter..."
+        disabled
+        autocomplete="off"
+      />
+      <button id="startBtn">Start Test</button>
+    </div>
+
+    <div class="status idle" id="statusText">
+      Click "Start Test" to begin.
+    </div>
+
+    <div class="instructions">
+      <strong>How it works:</strong>
+      <ol>
+        <li>Click <strong>Start Test</strong>.</li>
+        <li>Type a single <strong>g</strong> (or <strong>G</strong>) into the box.</li>
+        <li>Press <strong>Enter</strong> to count it.</li>
+        <li>Repeat steps 2–3 as fast as you can until the 10 seconds are up.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const duration = 10_000; // 10 seconds in ms
+
+    const startBtn = document.getElementById("startBtn");
+    const gInput = document.getElementById("gInput");
+    const timeLeftEl = document.getElementById("timeLeft");
+    const gCountEl = document.getElementById("gCount");
+    const gpsEl = document.getElementById("gps");
+    const statusText = document.getElementById("statusText");
+
+    let startTime = null;
+    let timerInterval = null;
+    let running = false;
+    let gCount = 0;
+
+    function formatTime(msRemaining) {
+      const seconds = Math.max(0, msRemaining) / 1000;
+      return seconds.toFixed(1);
+    }
+
+    function updateDisplay(now = Date.now()) {
+      if (!running) return;
+
+      const elapsed = now - startTime;
+      const remaining = duration - elapsed;
+
+      timeLeftEl.textContent = formatTime(remaining) + " ";
+      const span = document.createElement("span");
+      span.textContent = "seconds";
+      timeLeftEl.appendChild(span);
+
+      const rate = gCount / (Math.max(elapsed, 1) / 1000);
+      gpsEl.textContent = rate.toFixed(2) + " ";
+      const span2 = document.createElement("span");
+      span2.textContent = "g/s";
+      gpsEl.appendChild(span2);
+
+      if (remaining <= 0) {
+        endTest();
+      }
+    }
+
+    function startTest() {
+      running = true;
+      gCount = 0;
+      gCountEl.textContent = gCount;
+      gpsEl.textContent = "0.00 ";
+      const span = document.createElement("span");
+      span.textContent = "g/s";
+      gpsEl.appendChild(span);
+
+      startTime = Date.now();
+      timeLeftEl.textContent = formatTime(duration) + " ";
+      const spanSec = document.createElement("span");
+      spanSec.textContent = "seconds";
+      timeLeftEl.appendChild(spanSec);
+
+      statusText.textContent = "Go! Type 'g' and press Enter.";
+      statusText.classList.remove("idle", "done");
+
+      gInput.disabled = false;
+      gInput.value = "";
+      gInput.focus();
+
+      startBtn.textContent = "Restart";
+      startBtn.disabled = true; // prevent spam clicking during countdown
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        updateDisplay();
+      }, 50);
+
+      // enable restart after a short delay (to avoid accidental double-clicks)
+      setTimeout(() => {
+        if (running) {
+          startBtn.disabled = false;
+        }
+      }, 400);
+    }
+
+    function endTest() {
+      if (!running) return;
+      running = false;
+      clearInterval(timerInterval);
+
+      timeLeftEl.textContent = "0.0 ";
+      const spanSec = document.createElement("span");
+      spanSec.textContent = "seconds";
+      timeLeftEl.appendChild(spanSec);
+
+      const totalRate = gCount / (duration / 1000);
+      gpsEl.textContent = totalRate.toFixed(2) + " ";
+      const span = document.createElement("span");
+      span.textContent = "g/s";
+      gpsEl.appendChild(span);
+
+      gInput.disabled = true;
+      gInput.blur();
+
+      statusText.textContent =
+        gCount > 0
+          ? `Done! You hit ${gCount} g's in 10 seconds.`
+          : "Time's up! Try again.";
+      statusText.classList.remove("idle");
+      statusText.classList.add("done");
+
+      startBtn.disabled = false;
+      startBtn.textContent = "Try Again";
+    }
+
+    // Handle typing "g" + Enter
+    gInput.addEventListener("keydown", (e) => {
+      if (!running) return;
+
+      if (e.key === "Enter") {
+        const value = gInput.value.trim();
+        if (value.toLowerCase() === "g") {
+          gCount++;
+          gCountEl.textContent = gCount;
+        }
+        gInput.value = "";
+
+        // Update rate instantly using current time
+        updateDisplay(Date.now());
+      }
+    });
+
+    startBtn.addEventListener("click", () => {
+      if (running) {
+        // restart
+        clearInterval(timerInterval);
+      }
+      startTest();
+    });
+  </script>
+</body>
+</html>
